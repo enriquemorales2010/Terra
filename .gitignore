@@ -1,0 +1,14 @@
+# PHP app
+Terra2026/clases/conexion.php
+Terra2026/**/*.log
+Terra2026/**/error_log
+Terra2026/error_log
+Terra2026/uploads/
+Terra2026/upload/
+Terra2026/tmp/
+Terra2026/cache/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
