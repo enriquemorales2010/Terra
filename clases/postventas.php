@@ -1,5 +1,5 @@
-<?php  
-require 'conexion.php';
+<?php
+require_once __DIR__ . '/conexion.php';
 
 class postventas extends Conexion {
 

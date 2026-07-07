@@ -1,9 +1,9 @@
-<?php  
-
+<?php
 
 session_start();
 if (!isset($_SESSION['usuario'])) {
   header('Location: error_login.php?error=true');
+  exit;
 }
 
 include_once('clases/postventas.php');
@@ -11,58 +11,54 @@ include_once('modulos/maquetado.php');
 include_once('modulos/footer.php');
 include_once('modulos/scripts_js.php');
 
-$num_cas = $_GET['num_caso'];
+$num_cas = isset($_GET['num_caso']) ? intval($_GET['num_caso']) : 0;
+
+$nombre = '';
+$dept = '';
+$descripcion = '';
+$correo = '';
+$fono = '';
+$celular = '';
+$usuario = '';
+$nombre_edificio = '';
+$id_edificio = 0;
+$contrato = '';
+
+if ($num_cas <= 0) {
+    die('Número de caso inválido.');
+}
 
 $con = new postventas();
 
-  $sql = "SELECT postventas.num_caso, postventas.nom_rec, postventas.tip_con, postventas.num_dep, postventas.fec_ini_rec, postventas.resp_recl, postventas.desc_caso, postventas.correo_rec, postventas.fono_rec, postventas.cel_rec, postventas.rut_usu,postventas.id_ed, postventas.ID, edificio.nom_ed FROM postventas INNER JOIN edificio ON postventas.id_ed = edificio.id_ed WHERE postventas.num_caso = '$num_cas';";
-$consulta = $con->conn->query($sql);
+$stmt = $con->conn->prepare(
+    "SELECT p.num_caso, p.nom_rec, p.tip_con, p.num_dep, p.fec_ini_rec, p.resp_recl, p.desc_caso, p.correo_rec, p.fono_rec, p.cel_rec, p.rut_usu, p.id_ed, e.nom_ed " .
+    "FROM postventas p INNER JOIN edificio e ON p.id_ed = e.id_ed WHERE p.num_caso = ?"
+);
 
-if ($consulta) {
-  
-  if ($consulta->num_rows > 0) {
-
-    while ($fila = mysqli_fetch_assoc($consulta)) {
-
-  
-      $num_cas = $fila['num_caso'];
-      $nombre = $fila['nom_rec'];
-      $dept = $fila['num_dep'];
-      $descripcion = $fila['desc_caso'];
-      $correo  = $fila['correo_rec'];
-      $fono = $fila['fono_rec'];
-      $celular = $fila['cel_rec'];
-      $usuario = $fila['rut_usu'];
-      $nombre_edificio = $fila['nom_ed'];
-      $id_edificio = $fila['id_ed'];
-
-       if ($fila['tip_con'] == 1) {
-        $contrato = "Propietario";
-         
-        }elseif ($fila['tip_con'] == 2) {
-          $contrato = "Arrendatario";
-          }else{
-            echo "algo paso";
-          }
-
- 
-
-      
-
-
-    }
-
-  }
-
+if (!$stmt) {
+    die('Error al preparar consulta: ' . $con->conn->error);
 }
 
+$stmt->bind_param('i', $num_cas);
+$stmt->execute();
 
+$stmt->bind_result($num_cas, $nombre, $tip_con, $dept, $fec_ini_rec, $resp_recl, $descripcion, $correo, $fono, $celular, $usuario, $id_edificio, $nombre_edificio);
 
+if ($stmt->fetch()) {
+    if ($tip_con == 1) {
+        $contrato = 'Propietario';
+    } elseif ($tip_con == 2) {
+        $contrato = 'Arrendatario';
+    } else {
+        $contrato = 'Desconocido';
+    }
+} else {
+    die('No se encontró el caso de postventa solicitado.');
+}
 
+$stmt->close();
 
-?>
-
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
 <head>
   <title>Terra - Editar Datos de Usuario</title>
