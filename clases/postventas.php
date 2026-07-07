@@ -156,7 +156,6 @@ class postventas extends Conexion {
                 VALUES (NULL, '$caso', '$falla', '$decision', '$costo', '$descripcion')";
         
         $consulta = $this->conn->query($sql);
-        echo 1;
 
         if ($consulta) {
             return TRUE;
