@@ -1,0 +1,3 @@
+deployment:
+  tasks:
+    - /usr/local/bin/git checkout main
