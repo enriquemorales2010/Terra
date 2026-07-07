@@ -22,13 +22,13 @@ if(isset($_POST['id_falla']) && isset($_POST['caso']) && isset($_POST['descripci
     $resultado = $con->agregarfal($falla, $caso, $decision, $costo, $descripcion);
     
     if($resultado) {
-        header('Location: ../detalle_caso_postventas.php?num_caso=' . $caso . '&mensaje=Falla agregada correctamente');
+        header('Location: ../postventa_detalles.php?num_caso=' . $caso . '&mensaje=Falla agregada correctamente');
     } else {
-        header('Location: ../detalle_caso_postventas.php?num_caso=' . $caso . '&error=Error al agregar la falla');
+        header('Location: ../postventa_detalles.php?num_caso=' . $caso . '&error=Error al agregar la falla');
     }
 } else {
     // Si faltan datos, redireccionar con error
     $caso = isset($_POST['caso']) ? $_POST['caso'] : '';
-    header('Location: ../detalle_caso_postventas.php?num_caso=' . $caso . '&error=Faltan datos requeridos');
+    header('Location: ../postventa_detalles.php?num_caso=' . $caso . '&error=Faltan datos requeridos');
 }
 ?>
